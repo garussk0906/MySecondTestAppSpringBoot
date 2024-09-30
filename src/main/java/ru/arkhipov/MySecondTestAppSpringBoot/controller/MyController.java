@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.arkhipov.MySecondTestAppSpringBoot.exception.UnsupportedCodeException;
 import ru.arkhipov.MySecondTestAppSpringBoot.exception.ValidationFailedException;
+import ru.arkhipov.MySecondTestAppSpringBoot.model.Codes;
 import ru.arkhipov.MySecondTestAppSpringBoot.model.Request;
 import ru.arkhipov.MySecondTestAppSpringBoot.model.Response;
 import ru.arkhipov.MySecondTestAppSpringBoot.service.ValidationService;
+import ru.arkhipov.MySecondTestAppSpringBoot.util.DateTimeUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,13 +32,12 @@ public class MyController {
     @PostMapping(value = "/feedback")
     public ResponseEntity<Response> feedback(@Valid @RequestBody Request request,
                                              BindingResult bindingResult) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         Response response = Response.builder()
                 .uid(request.getUid())
                 .operationUid(request.getOperationUid())
-                .systemTime(simpleDateFormat.format(new Date()))
-                .code("success")
+                .systemTime(DateTimeUtil.getCustomFormat().format(new Date()))
+                .code(Codes.SUCCESS)
                 .errorcode("")
                 .errorMessage("")
                 .build();
@@ -50,12 +51,12 @@ public class MyController {
         try {
             validationService.isValid(bindingResult);
         } catch (ValidationFailedException e) {
-            response.setCode("failed");
+            response.setCode(Codes.FAILED);
             response.setErrorcode("validationException");
             response.setErrorMessage("ошибка валидации");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            response.setCode("failed");
+            response.setCode(Codes.FAILED);
             response.setErrorcode("UnknownException");
             response.setErrorMessage("произошла непредвиденная ошибка");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
