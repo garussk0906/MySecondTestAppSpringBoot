@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.arkhipov.MySecondTestAppSpringBoot.exception.UnsupportedCodeException;
 import ru.arkhipov.MySecondTestAppSpringBoot.exception.ValidationFailedException;
@@ -21,6 +22,7 @@ import java.util.Date;
 
 @Slf4j
 @RestController
+@RequestMapping("/api")
 public class MyController {
 
     private final ValidationService validationService;
@@ -38,6 +40,11 @@ public class MyController {
 
         log.info("request: {}", request);
 
+        request.setSystemName(Systems.CRM);
+        request.setSystemName(Systems.ERP);
+        request.setSystemName(Systems.WMS);
+
+
         Response response = Response.builder()
                 .uid(request.getUid())
                 .operationUid(request.getOperationUid())
@@ -49,6 +56,7 @@ public class MyController {
 
         // Проверка на неподдерживаемый код
         if ("123".equals(request.getUid())) {
+            log.error("Unsupported UID: {}", request.getUid()); // Логирование ошибки
             throw new UnsupportedCodeException("Unsupported UID: 123");
         }
 
@@ -59,13 +67,29 @@ public class MyController {
             response.setCode(Codes.FAILED);
             response.setErrorCode(ErrorCodes.VALIDATION_EXCEPTION);
             response.setErrorMessage(ErrorMessages.VALIDATION);
+
+            // Логирование ошибок в bindingResult
+            log.error("Validation failed: {}", bindingResult.getFieldErrors());
+
+            log.error("response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             response.setCode(Codes.FAILED);
             response.setErrorCode(ErrorCodes.UNKNOWN_EXCEPTION);
             response.setErrorMessage(ErrorMessages.UNKNOWN);
+
+            // Логирование ошибки
+            log.error("An unexpected error occurred: {}", e.getMessage(), e);
+
+            log.error("response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+
+        // Логирование модифицированного ответа
+        Response modifiedResponse = modifyResponseService.modify(response);
+        log.info("modified response: {}", modifiedResponse);
+
 
         return new ResponseEntity<>(modifyResponseService.modify(response), HttpStatus.OK);
     }
