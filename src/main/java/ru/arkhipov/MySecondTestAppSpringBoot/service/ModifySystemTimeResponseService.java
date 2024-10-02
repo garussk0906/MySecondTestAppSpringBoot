@@ -9,12 +9,14 @@ import java.util.Date;
 
 @Service
 @Qualifier("ModifySystemTimeResponseService")
-public class ModifySystemTimeResponseService implements ModifyResponseService {
+public class ModifySystemTimeResponseService
+        implements ModifyResponseService {
 
     @Override
     public Response modify(Response response) {
 
-        response.setSystemTime(DateTimeUtil.getCustomFormat().format(new Date()));
+        response.setSystemTime(DateTimeUtil.getCustomFormat()
+                .format(new Date()));
 
         return response;
     }

@@ -12,6 +12,6 @@ public class Response {
     private String operationUid;
     private String systemTime;
     private Codes code;
-    private String errorcode;
-    private String errorMessage;
+    private ErrorCodes errorCode;
+    private ErrorMessages errorMessage;
 }

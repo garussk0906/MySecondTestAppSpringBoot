@@ -35,5 +35,21 @@ public class Request {
     private int templateId; // нет
     private int productCode; // нет
     private int smsCode; // нет
+
+
+    @Override
+    public String toString(){
+        return "{" +
+                "uid=' " + uid + '\'' +
+                ", operationUid=' " + operationUid + '\'' +
+                ", systemName=' " + systemName + '\'' +
+                ", systemTime=' " + systemTime + '\'' +
+                ", source=' " + source + '\'' +
+                ", communicationId=' " + communicationId +
+                ", templateId=' " + templateId +
+                ", productCode=' " + productCode +
+                ", smsCode=' " + smsCode +
+                "}";
+    }
 }
 
