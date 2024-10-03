@@ -25,26 +25,41 @@ import java.util.Date;
 @RequestMapping("/api")
 public class MyController {
 
-    private final ValidationService validationService;
     private final ModifyResponseService modifyResponseService;
 
     @Autowired
-    public MyController(ValidationService validationService,@Qualifier("modifyOperationUidResponseService") ModifyResponseService modifyResponseService) {
-        this.validationService = validationService;
+    public MyController(ValidationService validationService,
+                        @Qualifier("modifyOperationUidResponseService") ModifyResponseService modifyResponseService) {
         this.modifyResponseService = modifyResponseService;
     }
 
     @PostMapping(value = "/feedback")
     public ResponseEntity<Response> feedback(@Valid @RequestBody Request request,
-                                             BindingResult bindingResult) {
+                                             BindingResult bindingResult) throws ValidationFailedException {
 
         log.info("request: {}", request);
 
-        request.setSystemName(Systems.CRM);
-        request.setSystemName(Systems.ERP);
-        request.setSystemName(Systems.WMS);
+        // Проверка на неподдерживаемый код
+        if ("123".equals(request.getUid())) {
+            log.error("Unsupported UID: {}", request.getUid());
+            throw new UnsupportedCodeException("Unsupported UID: 123");
+        }
 
+        // Проверка валидации
+        if (bindingResult.hasErrors()) {
+            log.error("Validation errors: {}", bindingResult.getAllErrors());
+            StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
+            bindingResult.getFieldErrors().forEach(error ->
+                    errorMessage.append(error.getField())
+                            .append(": ")
+                            .append(error.getDefaultMessage())
+                            .append("; ")
+            );
 
+            throw new ValidationFailedException(errorMessage.toString());
+        }
+
+        // Формирование успешного ответа
         Response response = Response.builder()
                 .uid(request.getUid())
                 .operationUid(request.getOperationUid())
@@ -54,43 +69,10 @@ public class MyController {
                 .errorMessage(ErrorMessages.EMPTY)
                 .build();
 
-        // Проверка на неподдерживаемый код
-        if ("123".equals(request.getUid())) {
-            log.error("Unsupported UID: {}", request.getUid()); // Логирование ошибки
-            throw new UnsupportedCodeException("Unsupported UID: 123");
-        }
-
-        // Проверка валидации
-        try {
-            validationService.isValid(bindingResult);
-        } catch (ValidationFailedException e) {
-            response.setCode(Codes.FAILED);
-            response.setErrorCode(ErrorCodes.VALIDATION_EXCEPTION);
-            response.setErrorMessage(ErrorMessages.VALIDATION);
-
-            // Логирование ошибок в bindingResult
-            log.error("Validation failed: {}", bindingResult.getFieldErrors());
-
-            log.error("response: {}", response);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            response.setCode(Codes.FAILED);
-            response.setErrorCode(ErrorCodes.UNKNOWN_EXCEPTION);
-            response.setErrorMessage(ErrorMessages.UNKNOWN);
-
-            // Логирование ошибки
-            log.error("An unexpected error occurred: {}", e.getMessage(), e);
-
-            log.error("response: {}", response);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-
         // Логирование модифицированного ответа
         Response modifiedResponse = modifyResponseService.modify(response);
         log.info("modified response: {}", modifiedResponse);
 
-
-        return new ResponseEntity<>(modifyResponseService.modify(response), HttpStatus.OK);
+        return new ResponseEntity<>(modifiedResponse, HttpStatus.OK);
     }
 }

@@ -8,7 +8,7 @@ import ru.arkhipov.MySecondTestAppSpringBoot.util.DateTimeUtil;
 import java.util.Date;
 
 @Service
-@Qualifier("ModifySystemTimeResponseService")
+@Qualifier("modifySystemTimeResponseService")
 public class ModifySystemTimeResponseService
         implements ModifyResponseService {
 

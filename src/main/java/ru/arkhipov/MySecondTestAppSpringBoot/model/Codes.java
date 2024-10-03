@@ -1,7 +1,7 @@
 package ru.arkhipov.MySecondTestAppSpringBoot.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.sun.net.httpserver.Authenticator;
+//import com.sun.net.httpserver.Authenticator;
 
 public enum Codes {
 
