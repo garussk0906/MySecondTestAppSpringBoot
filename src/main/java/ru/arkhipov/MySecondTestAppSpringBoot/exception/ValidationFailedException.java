@@ -1,5 +1,7 @@
 package ru.arkhipov.MySecondTestAppSpringBoot.exception;
 
-public class ValidationFailedException extends Throwable {
-    public ValidationFailedException(String message) {super(message); }
+public class ValidationFailedException extends Exception {
+    public ValidationFailedException(String message){
+        super(message);
+    }
 }
