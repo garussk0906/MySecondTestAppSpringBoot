@@ -1,9 +1,6 @@
 package ru.arkhipov.MySecondTestAppSpringBoot.model;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,24 +13,36 @@ import lombok.NoArgsConstructor;
 public class Request {
 
 
-    @NotBlank(message = "uid is required")
-    @Size(max = 32, message = "uid must be up to 32 characters long")
+    @NotNull
     private String uid;
 
-    @NotBlank(message = "operationUid is required")
-    @Size(max = 32, message = "operationUid must be up to 32 characters long")
+    @NotNull
     private String operationUid;
-    private String systemName; // нет
 
-    @NotBlank(message = "systemTime is required")
+    @NotNull
+    private Systems systemName;
+
     private String systemTime;
     private String source; // нет
-
-    @Min(value = 1, message = "communicationId must be at least 1")
-    @Max(value = 100000, message = "communicationId must be at most 100000")
     private int communicationId;
     private int templateId; // нет
     private int productCode; // нет
     private int smsCode; // нет
+
+
+    @Override
+    public String toString(){
+        return "Request{" +
+                "uid=' " + uid + '\'' +
+                ", operationUid=' " + operationUid + '\'' +
+                ", systemName=' " + systemName + '\'' +
+                ", systemTime=' " + systemTime + '\'' +
+                ", source=' " + source + '\'' +
+                ", communicationId=' " + communicationId +
+                ", templateId=' " + templateId +
+                ", productCode=' " + productCode +
+                ", smsCode=' " + smsCode +
+                "}";
+    }
 }
 

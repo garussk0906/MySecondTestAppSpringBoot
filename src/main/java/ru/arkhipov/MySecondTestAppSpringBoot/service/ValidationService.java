@@ -9,7 +9,7 @@ import javax.naming.Binding;
 
 @Service
 public interface ValidationService {
-    void isVAlid(BindingResult bindingResult) throws ValidationFailedException;
-
     void isValid(BindingResult bindingResult) throws ValidationFailedException;
+
+//    void isValid(BindingResult bindingResult) throws ValidationFailedException;
 }
