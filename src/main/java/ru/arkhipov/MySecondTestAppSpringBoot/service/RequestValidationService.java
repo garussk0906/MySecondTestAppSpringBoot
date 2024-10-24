@@ -14,7 +14,7 @@ public class RequestValidationService implements ValidationService {
     public void isValid(BindingResult bindingResult) throws ValidationFailedException {
         if (bindingResult.hasErrors()) {
             throw new
-                    ValidationFailedException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
+                    ValidationFailedException(bindingResult.getFieldError().toString());
         }
     }
 }

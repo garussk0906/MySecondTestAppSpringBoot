@@ -13,15 +13,11 @@ import lombok.NoArgsConstructor;
 public class Request {
 
 
-    @NotNull
+    @NotBlank
     private String uid;
 
-    @NotNull
     private String operationUid;
-
-    @NotNull
     private Systems systemName;
-
     private String systemTime;
     private String source; // нет
     private int communicationId;

@@ -10,7 +10,8 @@ public enum ErrorCodes {
 
     UNKNOWN_EXCEPTION("UnknowException"),
 
-    UNSUPPORTED_EXCEPTION("UnsupportedException");
+    UNSUPPORTED_EXCEPTION ("UnsupportedException");
+
 
     private final String name;
 
