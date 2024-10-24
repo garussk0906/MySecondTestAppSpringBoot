@@ -20,7 +20,7 @@ public enum ErrorCodes {
     }
 
     @JsonValue
-    public String getName(){
+    public String getName() {
         return name;
     }
 
